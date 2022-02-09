@@ -1,9 +1,10 @@
--- drop database expensetracker;
--- drop user expensetracker;
+drop database expensetracker;
+drop user expensetracker;
 
+create user expensetracker with password 'try_Lourens08';
+create database expensetracker with template=template0 owner=postgres;	
 
--- create user expensetracker with password 'password';
--- create database expensetrackerdb with template=template0 owner=expensetracker;
+\connect expensetracker;
 
 alter default privileges grant all on tables to expensetracker;
 alter default privileges grant all on sequences to expensetracker;
@@ -22,6 +23,7 @@ user_id integer not null,
 title varchar(20) not null,
 description varchar(50) not null
 );
+
 alter table et_categories add constraint cat_users_fk
 foreign key (user_id) references et_users(user_id);
 
@@ -33,8 +35,10 @@ amount numeric(10,2) not null,
 note varchar(50) not null,
 transaction_date bigint not null
 );
+
 alter table et_transactions add constraint trans_cat_fk
 foreign key (category_id) references et_categories(category_id);
+
 alter table et_transactions add constraint trans_users_fk
 foreign key (user_id) references et_users(user_id);
 
