@@ -10,6 +10,7 @@ public class Transaction {
     private Long transactionDate;
 
     public Transaction(Integer transactionId, Integer categoryId, Integer userId, Double amount, String note, Long transactionDate) {
+    	super();
         this.transactionId = transactionId;
         this.categoryId = categoryId;
         this.userId = userId;

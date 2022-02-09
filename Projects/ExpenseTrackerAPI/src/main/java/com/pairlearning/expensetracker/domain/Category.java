@@ -9,6 +9,7 @@ public class Category {
     private Double totalExpense;
 
     public Category(Integer categoryId, Integer userId, String title, String description, Double totalExpense) {
+    	super();
         this.categoryId = categoryId;
         this.userId = userId;
         this.title = title;

@@ -3,6 +3,7 @@ package com.pairlearning.expensetracker.repositories;
 import com.pairlearning.expensetracker.domain.Category;
 import com.pairlearning.expensetracker.exceptions.EtBadRequestException;
 import com.pairlearning.expensetracker.exceptions.EtResourceNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -21,13 +22,16 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             "COALESCE(SUM(T.AMOUNT), 0) TOTAL_EXPENSE " +
             "FROM ET_TRANSACTIONS T RIGHT OUTER JOIN ET_CATEGORIES C ON C.CATEGORY_ID = T.CATEGORY_ID " +
             "WHERE C.USER_ID = ? GROUP BY C.CATEGORY_ID";
+    
     private static final String SQL_FIND_BY_ID = "SELECT C.CATEGORY_ID, C.USER_ID, C.TITLE, C.DESCRIPTION, " +
             "COALESCE(SUM(T.AMOUNT), 0) TOTAL_EXPENSE " +
             "FROM ET_TRANSACTIONS T RIGHT OUTER JOIN ET_CATEGORIES C ON C.CATEGORY_ID = T.CATEGORY_ID " +
             "WHERE C.USER_ID = ? AND C.CATEGORY_ID = ? GROUP BY C.CATEGORY_ID";
+    
     private static final String SQL_CREATE = "INSERT INTO ET_CATEGORIES (CATEGORY_ID, USER_ID, TITLE, DESCRIPTION) VALUES(NEXTVAL('ET_CATEGORIES_SEQ'), ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE ET_CATEGORIES SET TITLE = ?, DESCRIPTION = ? " +
             "WHERE USER_ID = ? AND CATEGORY_ID = ?";
+    
     private static final String SQL_DELETE_CATEGORY = "DELETE FROM ET_CATEGORIES WHERE USER_ID = ? AND CATEGORY_ID = ?";
     private static final String SQL_DELETE_ALL_TRANSACTIONS = "DELETE FROM ET_TRANSACTIONS WHERE CATEGORY_ID = ?";
 
@@ -36,13 +40,13 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public List<Category> findAll(Integer userId) throws EtResourceNotFoundException {
-        return jdbcTemplate.query(SQL_FIND_ALL, new Object[]{userId}, categoryRowMapper);
+    	return jdbcTemplate.query(SQL_FIND_ALL, categoryRowMapper, new Object[]{userId});
     }
 
     @Override
     public Category findById(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
         try {
-            return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId, categoryId}, categoryRowMapper);
+        	return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, categoryRowMapper, new Object[]{userId, categoryId});
         }catch (Exception e) {
             throw new EtResourceNotFoundException("Category not found");
         }
